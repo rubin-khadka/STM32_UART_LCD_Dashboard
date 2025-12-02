@@ -28,27 +28,26 @@ void DWT_Init(void)
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 
     // Verify DWT is actually counting
-    uint32_t start = DWT_CYCLE_COUNT();
+    uint32_t start = DWT_CYCCNT_R;
 
-    for(volatile int i = 0; i < 10; i++);
-    if(DWT_CYCCNT_R == start)
+    for(volatile int i = 0; i < 100; i++)
     {
-      // DWT failed to start - handle error
+      __NOP();
+    }
+
+    uint32_t end = DWT_CYCCNT_R;
+
+    if(end == start)
+    {
+      // TODO (Rubin khadka): add error handling later
     }
   }
 }
 
-//
+/* Delay for microseconds using DWT */
 void DWT_Delay_Us(uint32_t us)
 {
-  // Calculate cycles needed
-  uint32_t cycles_per_us = SystemCoreClock / 1000000;
-  if(cycles_per_us == 0)
-  {
-    cycles_per_us = 1; // Safety
-  }
-
-  uint32_t delay_cycles = us * cycles_per_us;
+  uint32_t delay_cycles = us * DWT_CPU_MHZ;
   uint32_t start_cycles = DWT_CYCCNT_R;
 
   // Wait for required cycles
@@ -57,4 +56,14 @@ void DWT_Delay_Us(uint32_t us)
     // Empty
   }
 }
+
+/* Delay for milliseconds using DWT */
+void DWT_Delay_Ms(uint32_t ms)
+{
+  while(ms--)
+  {
+    DWT_Delay_Us(1000); // 1000µs = 1ms
+  }
+}
+
 

@@ -14,6 +14,10 @@ extern "C" {
 
 #include "stdint.h"
 
+#ifndef DWT_CPU_MHZ
+#define DWT_CPU_MHZ 72  //Configured to 72 MHz
+#endif
+
 /* Function Definitions */
 void DWT_Init(void);
 void DWT_Delay_Us(uint32_t us);
