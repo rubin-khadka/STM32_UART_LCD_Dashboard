@@ -1,0 +1,19 @@
+# STM32 Project - Git Ignore
+
+# STM32CubeIDE Build Outputs
+Debug/
+Release/
+.settings/
+
+# STM32CubeIDE
+/.mxproject
+/Project Backups/ 
+
+# STM32CubeMX generated
+Drivers/
+
+# Remove linker file 
+*.ld
+
+# remove user files created by proteus
+*.RUBIN.*
