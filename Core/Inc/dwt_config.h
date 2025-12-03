@@ -12,11 +12,10 @@
 extern "C" {
 #endif
 
-
 #include "stdint.h"
 
 #ifndef DWT_CPU_MHZ
-#define DWT_CPU_MHZ 64  //Configured to 64 MHz
+#define DWT_CPU_MHZ 72  //Configured to 64 MHz
 #endif
 
 /* Function Definitions */
