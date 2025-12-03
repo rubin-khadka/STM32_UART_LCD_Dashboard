@@ -18,7 +18,7 @@
 #define D6(x) (x==1 ? (HAL_GPIO_WritePin(D6_GPIO_Port, D6_Pin, GPIO_PIN_SET)) : (HAL_GPIO_WritePin(D6_GPIO_Port, D6_Pin, GPIO_PIN_RESET)))
 #define D7(x) (x==1 ? (HAL_GPIO_WritePin(D7_GPIO_Port, D7_Pin, GPIO_PIN_SET)) : (HAL_GPIO_WritePin(D7_GPIO_Port, D7_Pin, GPIO_PIN_RESET)))
 
-void lcd_init(void)
+void LCD_Init(void)
 {
   // Set control pins for command mode
   RS(0); // Command mode
@@ -28,27 +28,27 @@ void lcd_init(void)
   // Manual initialization sequence
   DWT_Delay_Ms(50);
 
-  lcd_process_4bit(0x03);
+  LCD_Process_4Bit(0x03);
   DWT_Delay_Ms(5);
 
-  lcd_process_4bit(0x03);
+  LCD_Process_4Bit(0x03);
   DWT_Delay_Us(150);
 
-  lcd_process_4bit(0x03);
+  LCD_Process_4Bit(0x03);
   DWT_Delay_Us(150);
 
   // Switch to 4 bit mode
-  lcd_process_4bit(0x02);
+  LCD_Process_4Bit(0x02);
   DWT_Delay_Us(150);
 
-  lcd_write_command(0x28); // 4-bit, 2-line, 5x8
-  lcd_write_command(0x0C); // Display ON, cursor off, blink off
-  lcd_write_command(0x01); // Clear display
+  LCD_Write_Command(0x28); // 4-bit, 2-line, 5x8
+  LCD_Write_Command(0x0C); // Display ON, cursor off, blink off
+  LCD_Write_Command(0x01); // Clear display
   DWT_Delay_Ms(2);
-  lcd_write_command(0x06); // Entry mode
+  LCD_Write_Command(0x06); // Entry mode
 }
 
-void lcd_write_command(uint8_t param)
+void LCD_Write_Command(uint8_t param)
 {
   RS(0);  // Command mode
   RW(0);  // Write mode
@@ -56,8 +56,8 @@ void lcd_write_command(uint8_t param)
   DWT_Delay_Us(1);
 
   // Send command in two 4-bit nibbles
-  lcd_process_4bit(param >> 4);   // High nibble first
-  lcd_process_4bit(param & 0xF);  // Low nibble second
+  LCD_Process_4Bit(param >> 4);   // High nibble first
+  LCD_Process_4Bit(param & 0xF);  // Low nibble second
 
   // Check if command needs extra delay
   if(param == 0x01 || param == 0x02)
@@ -72,7 +72,7 @@ void lcd_write_command(uint8_t param)
   }
 }
 
-void lcd_write_data(uint8_t param)
+void LCD_Write_Data(uint8_t param)
 {
   RS(1);  // Data mode
   RW(0);  // Write mode
@@ -80,14 +80,14 @@ void lcd_write_data(uint8_t param)
   DWT_Delay_Us(1);
 
   // Send data in two 4-bit nibbles
-  lcd_process_4bit(param >> 4);   // High nibble first
-  lcd_process_4bit(param & 0x0F); // Low nibble second
+  LCD_Process_4Bit(param >> 4);   // High nibble first
+  LCD_Process_4Bit(param & 0x0F); // Low nibble second
 
   // Data write execution delay (needs >43µs)
   DWT_Delay_Us(50);
 }
 
-void lcd_process_4bit(uint8_t data)
+void LCD_Process_4Bit(uint8_t data)
 {
   // Set data pins using direct bit operation
   // shifted to get 1/0 value for proper macro behavior
@@ -105,21 +105,29 @@ void lcd_process_4bit(uint8_t data)
   DWT_Delay_Us(1);  // Wait before next operation
 }
 
-void lcd_set_cursor(uint8_t row, uint8_t col)
+void LCD_Set_Cursor(uint8_t row, uint8_t col)
 {
-  lcd_write_command((row & 0x01) ? (0xC0 | (col & 0x0F)) : (0x80 | (col & 0x0F)));
+  LCD_Write_Command((row & 0x01) ? (0xC0 | (col & 0x0F)) : (0x80 | (col & 0x0F)));
 }
 
-void lcd_print(const char *str)
+void LCD_Print(const char *str)
 {
   while(*str)
   {
-    lcd_write_data(*str++);
+    LCD_Write_Data(*str++);
   }
 }
 
-void lcd_clear(void)
+void LCD_Clear(void)
 {
-  lcd_write_command(0x01);  // Clear display command
+  LCD_Write_Command(0x01);  // Clear display command
 }
+
+void LCD_Home(void)
+{
+  LCD_Write_Command(0x02);  // Move cursor to home position
+}
+
+
+
 

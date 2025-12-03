@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "lcd16x2.h"
 #include "dwt_config.h"
+#include "uart_handler.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,25 +93,30 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   DWT_Init();
-  // Initialize LCD (uses DWT delays)
-  lcd_init();
+  LCD_Init();
+  UART1_Init();
 
-  // Test display
-  lcd_set_cursor(0, 0);
-  lcd_print("DWT Timing OK!");
+  LCD_Clear();
+  LCD_Set_Cursor(0, 0);
 
-  lcd_set_cursor(1, 0);
-  lcd_print("72MHz Working");
+  LCD_Print("UART Ready !!!");
+  LCD_Set_Cursor(1, 0);
+  LCD_Print("Rx: ");
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while(1)
   {
-    LED1(1);
-    DWT_Delay_Ms(100);
-    LED1(0);
-    DWT_Delay_Ms(100);
+    if(!UART1_Buffer_Empty(&usart1_rx_buf))
+    {
+      char ch = UART1_Buffer_Read(&usart1_rx_buf);
+
+      // Display on LCD
+      LCD_Set_Cursor(1, 5);
+      LCD_Write_Data(ch);
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

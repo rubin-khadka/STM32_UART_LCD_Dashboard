@@ -15,13 +15,18 @@ extern "C" {
 #include "stdint.h"
 
 // LCD Function prototypes
-void lcd_init(void);
-void lcd_write_command(uint8_t param);
-void lcd_write_data(uint8_t param);
-void lcd_process_4bit(uint8_t data);
-void lcd_set_cursor(uint8_t row, uint8_t col);
-void lcd_print(const char *);
-void lcd_clear(void);
+void LCD_Init(void);
+void LCD_Write_Command(uint8_t param);
+void LCD_Write_Data(uint8_t param);
+void LCD_Process_4Bit(uint8_t data);
+void LCD_Set_Cursor(uint8_t row, uint8_t col);
+void LCD_Print(const char *);
+void LCD_Clear(void);
+void LCD_Home(void);
+void LCD_EntryMode_Set(uint8_t mode);
+void LCD_DisplayControl_Set(uint8_t ctrl);
+void LCD_Shift(uint8_t shift_type);
+void LCD_Set_CGRAM_Addr(uint8_t addr);
 
 #ifdef __cplusplus
 }
